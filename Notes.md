@@ -60,6 +60,14 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 ### Break it Down... How is it Structured?
 
+- Create a `.gitignore` file and add any files that are not needed to upload to GitHub
+
+- Start by initializing a git repository, with the following commands in the terminal:
+    - `git init`
+    - `git add .`
+    - `git commit -m "<commit message>"`
+
+- When calling up the `uvicorn` server `main:app` is the `<file name>:<variable FastAPI was assigned to>` and the `--reload` flag tells the server to automatically reload when any changes are made to the files within the app.
 
 ### Basic Concepts
 
