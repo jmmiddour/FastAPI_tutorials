@@ -69,103 +69,141 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - When calling up the `uvicorn` server `main:app` is the `<file name>:<variable FastAPI was assigned to>` and the `--reload` flag tells the server to automatically reload when any changes are made to the files within the app.
 
+
 ### Basic Concepts
 
-- Path Parameters:
+- **Path Parameters:**
+  - If you want to have both dynamic and static routes (paths) you have to be mindful of placement within the code base.
+  - For a dynamic path, the user can change the path by simply adding the parameter in to the url like so:
+    - `.../blogs/100`
+      - If the route (path) is set up as:
+        - `@app.get('/blog/{blog_id}')`
+      - The above url would show the blog at blog id 100.
+  - For a static path, the url must be entered exactly as it is set up in the routing (path) code, like so:
+    - `@app.get('/blog/unpublished')`
+    - The url must be typed as:
+      - `.../blog/unpulished` in order for it to be valid.
+  - If you have a static path that is a subpath of another path that is a dynamic subpath of the same parent path, the static subpath needs to be first in the code base or it will read the dynamic subpath first and run the code for it and will never make it to the static subpath code.
+  - FastAPI reads code / paths from top to bottom. Similar to how Python reads if statements. It will first look at the first path, if the path entered does not match, it ignores the code for that path and moves to the next path. If that path still does not match, it moves to the next path, and so on until it finds the matching path or reaches the end of the code. This is why placement of static and dynamic paths are so important.
+
+- **API Docs - Swagger/Redoc:**
+
+  - ***Swagger UI:***
+    - Is accessed via url `.../docs`
+    - Is dynamic and interactive
+    - Shows all routes (paths) within the app.
+    - Allows the user to "try out" each path individually.
+      - When the user "tries it out", they will get the following responses:
+        - cURL: client URL: command line tool for file transfer with a URL syntax
+        - The Request URL
+        - The Server Response:
+          - The Response Code 
+          - The Response Body
+          - The Response Headers
+            - content-length
+            - content-type
+            - date
+            - server
+        - Responses:
+          - The Response Code
+          - The Response Description
+    - Has a nice user-friendly interface.
+    - Is build out automatically with FastAPI
+  
+  - ***ReDoc:***
+    - Is accessed via url `.../redoc`
+    - Is static and just shows the basic documentation of the API
+    - This is also automatically created when using FastAPI
+
+- **Query Parameters:**
 
 
-- API Docs - Swagger/Redocs:
-
-
-- Query Parameters:
-
-
-- Request Body:
+- **Request Body:**
 
 
 ### Intermediate Concepts
 
-- Debugging FastAPI
+- **Debugging FastAPI**
 
 
-- Pydantic Schemas
+- **Pydantic Schemas**
 
 
-- SQLAlchemy Database Connection
+- **SQLAlchemy Database Connection**
 
 
-- Models and Table
+- **Models and Table**
 
 
 ### Database Tasks
 
-- Store blog to database
+- **Store blog to database**
 
 
-- Get blogs from database
+- **Get blogs from database**
 
 
-- Delete
+- **Delete**
 
 
-- Update
+- **Update**
 
 
 ### Responses
 
-- Handling Exceptions
+- **Handling Exceptions**
 
 
-- Return Response
+- **Return Response**
 
 
-- Define response model
+- **Define response model**
 
 
 ### User and Password
 
-- Create user
+- **Create user**
 
 
-- Hash user password
+- **Hash user password**
 
 
-- Show single user
+- **Show single user**
 
 
-- Define docs tags
+- **Define docs tags**
 
 
 ### Relationship
 
-- Define User to Blog relationship
+- **Define User to Blog relationship**
 
 
-- Define Blog to User relationship
+- **Define Blog to User relationship**
 
 
 ### Refactor for Bigger Application
 
-- API Router
+- **API Router**
 
 
-- API Router with Parameters
+- **API Router with Parameters**
 
 
 ### Authentication using JWT (JSON Web Token)
 
-- Create Login Route
+- **Create Login Route**
 
 
-- Login and verify password
+- **Login and verify password**
 
 
-- Return JWT access token
+- **Return JWT access token**
 
 
-- Routes behind authentication
+- **Routes behind authentication**
 
 
 ### Deploy FastAPI
 
-- Using Deta.sh website to deploy
+- **Using Deta.sh website to deploy**
