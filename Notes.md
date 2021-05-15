@@ -587,9 +587,52 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
         return new_user
     ```
 
-- **Hash user password**
+- **Hash User Password**
 
-  - 
+  - [Hash the Password in Video](https://youtu.be/7t2alSnE2-I?t=8588)
+  
+  - [FastAPI Documentation - OAuth2 with Password (and hashing), Bearer with JWT tokens](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/?h=hash)
+  
+  - First need to install `passlib` and `bcrypt`. This can be done by just adding to your `requirements.txt` file or you can `pip install passlib bcrypt` into your virtual environment. If you add it to your `requirements.txt` file then you also need to reinstall your requirements file in your terminal in your virtual environment with `pip install -r requirements.txt`.
+  
+  - In `main.py` file, import `CryptContext` from `passlib.context`
+  
+  - Add a variable to instantiate the CryptContext function: `pwd_cxt = CryptContext(schemas=['bcrypt'], deprecated='auto')`
+  
+  - Then need to change the path to the following in order to use the hashing function:
+  
+    ```
+    @app.post('/user')
+    def create_user(request: schemas.User, db: Session = Depends(get_db)):
+        hashed_pwd = pwd_cxt.hash(request.password)
+        new_user = models.User(name=request.name, email=request.email,
+                               password=hashed_pwd)
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return new_user
+    ```
+    
+  - Another way to hash the passwords:
+  
+    - Create another file called `hashing.py`
+  
+    - Move the import `CryptContext` from `passlib.context` to `hashing.py`
+  
+    - Move the variable to instantiate the CryptContext function: `pwd_cxt = CryptContext(schemas=['bcrypt'], deprecated='auto')` to `hashing.py`
+  
+    - Then need to change the path, slightly, to the following in order to use the hashing function:
+  
+      ```
+      @app.post('/user')
+      def create_user(request: schemas.User, db: Session = Depends(get_db)):
+          new_user = models.User(name=request.name, email=request.email,
+                                 password=Hash.bcrypt(request.password))
+          db.add(new_user)
+          db.commit()
+          db.refresh(new_user)
+          return new_user
+      ```
 
 - **Show single user**
 
