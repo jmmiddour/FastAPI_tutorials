@@ -71,9 +71,19 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - Verify that you have Python 3.6 or greater installed on your machine
 
-- Need to install fastapi via the command prompt: `pip install fastapi`
+- First set up a virtual environment, not a requirement, but it is best practice to do so in order to avoid any conflicts.
 
-- Need to install uvicorn via the command prompt: `pip install uvicorn`
+  - Do the following commands in the terminal:
+    
+    - `python3 -m venv <name of environment>` creates a new folder in the current directory with the name of the environment. This creates your new environment variables for this project specifically.
+  
+    - `<name of environment>\Scripts\activate.bat` to activate the virtual environment on a Windows machine or if using the bash command line tool you need to enter `source <name of environment>/Scripts/activate` in the command line. Or `source <name of environment>/bin/activate` on Unix, or MacOS.
+  
+    - Need to install fastapi via the command prompt: `pip install fastapi`
+
+    - Need to install uvicorn via the command prompt: `pip install uvicorn`
+  
+    - If you have an older version of pip installed on your computer, run this command to update it: `python -m pip install --upgrade pip` while in your virtual environment.
 
 - Create the `main.py` file for the app (See the `main.py` file in this directory for notes in what to do there)
 
@@ -269,8 +279,6 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
       async def create_item(item: Item):
           return item
       ```
-      
-  
 
 
 ### Intermediate Concepts
@@ -299,7 +307,7 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
   
   - SQLAlchemy is a Python SQL Toolkit and Object Relational Mapper (ORM). It gives application developers the full power and flexibility of SQL.
   
-  - Need to create a new file `requirements.txt` and in this file, need to add fastapi and uvicorn.
+  - Need to create a new file `requirements.txt` and in this file, need to add `fastapi`, `uvicorn`, and `sqlalchemy`.
   
   - Then, in the terminal, `python -m venv blog-env` to create a virtual environment called "blog-env"
   
@@ -317,43 +325,158 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
   - Create a new file (`database.py`) in the blog directory for your database code.
   
-  - Import `create_engine` from `sqlalchemy`.
+    - Import `create_engine` from `sqlalchemy`.
   
     - Create a global variable for the database url
   
     - Create the engine using the global variable defined above and `connect_args={'check_same_thread': False}` which is something that is used by FastAPI
+  
+  - Create a session by first importing `sessionmaker` from `sqlalchemy.orm`
+  
+    - Create the session using the above module: `LocalSession = sessionmaker(bind=engine, autocommit=False, autoflush=False)`
 
   - Import `declarative_base` from `sqlalchemy.ext.declarative` to declare the mapping for the database
   
     - Declare the mapping to the database using the above method
-  
-  - Create a session by first importing `sessionmaker` from `sqlalchemy.orm`
-  
-    - Create the session using the above module: `session = sessionmaker(bind=engine, autocommit=False, autoflush=False)`
 
 - **Models and Table**
 
+  - Open TablePlus and click on "Create a new connection..." on the bottom of the window
+
+    - Click on SQLite
   
+    - Only fields that are required is the name and the file location.
+  
+  - In FastAPI the schema is called the model. So you need to create a model (class) for each table you are going to have in your database.
+  
+    - Create a `models.py` file in the blog directory to hold all the code for the tables your database.
+  
+      - Create your table classes in the `models.py` file.
+  
+  - In the `main.py` in blog directory, need to add the following code at the top: `models.Base.metadata.create_all(engine)` to create the database.
+
+  - Then in the `models.py` file need to import `Column`, `Integer`, and `String` from `sqlalchemy` and from the `database.py` file, `Base`.
+  
+  - Create a class for the table blog:
+    ```
+    class Blog(Base):
+        __tablename__ = 'blogs'
+        id = Column(Integer, primary_key=True, index=True)
+        title = Column(String)
+        body = Column(String)
+    ```
 
 
 ### Database Tasks
 
 - **Store blog to database**
-
+  
+  - In the `main.py` file, need to import some new libraries:
+  
+    - `from sqlalchemy.orm import Session`
+  
+    - `from fastapi import Depends`
+  
+    - `from .database import LocalSession`
+  
+  - In the `main.py` file, need to add some parameters to the method `create()` in the post request method for `'/blog'`
+  
+    - `db: Session = Depends(get_db)` this turns the Session into a pydantic session using the `Depends` from `fastapi`.
+  
+      - `get_db` is a function we will need to create above the post request method to get the database connection.
+  
+  - In the `main.py` file, need to add some new functionallity to the `create()` method, so it now looks like this:
+  
+    ```
+    def create(request: schemas.Blog, db: Session = Depends(get_db)):
+        new_blog = models.Blog(title=request.title, body=request.body)
+        db.add(new_blog)
+        db.commit()
+        db.refresh(new_blog)
+        return new_blog
+    ```
 
 - **Get blogs from database**
 
+  - Add a new get request method to the `main.py` file to list all of the blogs in the database in a JSON format:
+  
+    ```
+    @app.get('/blog')
+    def get_blogs(db: Session = Depends(get_db)):
+        blogs = db.query(models.Blog).all()
+        return blogs
+    ```
+
+  - Add a new get request method to the `main.py` file to show a single blog by its id number:
+  
+    ```
+    @app.get('/blog/{id}')
+    def show_blog(id, db: Session = Depends(get_db)):
+        blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+        return blog
+    ```
 
 - **Delete**
 
+  - 
 
 - **Update**
 
 
 ### Responses
 
+- **Exception and Status Code**
+
+  - When creating something the response code should be `201` not `200`.
+  
+    - You will first need to import `status` from `fastapi`.
+
+    - Then all you have to do to change this is to add `status_code=status.HTTP_201_CREATED` in the parameters when you create the path request with `@app.post('<path>', status_code=status.HTTP_201_CREATED)`
+
+  - If you want your user to see a customized response code if they enter an invalid `id` number for a blog, do the following the `main.py` file:
+  
+    - Need to import `Response` from `fastapi`
+  
+    - The go to the `@app.get('/blog/{id})` path method and put in the parameter `status_code=200` as the default status code.
+  
+    - Then need to add `response: Response` after `blog_id` as a parameter in the `def show_blog` function.
+  
+    - After you query the database for the blog, add the following code block:
+  
+      ```
+      if not blog:
+          response.status_code = status.HTTP_404_NOT_FOUND
+          return {
+              'detail':
+                  f'Blog with the id {blog_id} is not available. Please '
+                  f'try another blog id number.'
+          }
+      ```
+      
+    - The above code will override the default status code if the if statement is True and returns the 404 status, and a customized message in the response body for the user.
+
 - **Handling Exceptions**
 
+  - If you want to add an exception to the status code the user is give you can do so as follows:
+  
+    - Import `HTTPException` from fastapi
+  
+    - Say you have a `user` database, and you want to raise an exception to the status code if the user is already in the database to avoid duplicates. You could code it like this:
+  
+      ```
+      if user:
+          raise HTTPException(status_code=400, detail=f'User {user} is already registered.')
+      ```
+      
+    - Or if you go with the blog example we have been working with, and check for the edge case of the user entering an invalid blog id number. You could code it like this:
+  
+      ```
+      if not blog:
+          raise HTTPException(
+              status_code=status.HTTP_404_NOT_FOUND,
+              detail=f'Blog with the id {blog_id} is not available. Please try '
+                     f'another blog id number.')
+      ```
 
 - **Return Response**
 
