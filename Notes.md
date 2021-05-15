@@ -636,6 +636,36 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **Show single user**
 
+  - [Show a User in Video](https://youtu.be/7t2alSnE2-I?t=9036)
+  
+  - In the `schemas.py` file, create a pydantic model to return only the user name and password to the user:
+    
+    ```
+    class ShowUser(BaseModel):
+        name: str
+        email: str
+    
+        class Config():
+            orm_mode = True
+    ```
+    
+  - In the `main.py`, modify the code for the user path: `@app.post('/user', response_model=schemas.ShowUser)`
+
+  - Also need to add another path to the `main.py` file to get the user information by the id number:
+  
+    ```
+    @app.get('/user/{user_id}', response_model=schemas.ShowUser)
+    def get_user(user_id: int, db: Session = Depends(get_db)):
+        user = db.query(models.User).filter(models.User.id == user_id).first()
+    
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f'The user with the id {user_id} is not available. Please '
+                       f'try another user id number.')
+    
+        return user
+    ```
 
 - **Define docs tags**
 
