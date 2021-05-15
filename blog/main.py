@@ -199,7 +199,7 @@ def show_blog(blog_id, response: Response, db: Session = Depends(get_db)):
 
 
 # Create the user path with hashing of passwords
-@app.post('/user')
+@app.post('/user', response_model=schemas.ShowUser)
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
 	# # Hash the password when it is passed in by the user
 	# hashed_pwd = pwd_cxt.hash(request.password)
@@ -218,3 +218,21 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
 	db.refresh(new_user)
 	# Return the new user just entered to the user
 	return new_user
+
+
+# Create a new path to show user by their id
+@app.get('/user/{user_id}', response_model=schemas.ShowUser)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+	# Query the database to the get the user data by the user id
+	user = db.query(models.User).filter(models.User.id == user_id).first()
+
+	# Check edge case of invalid user id entered
+	if not user:
+		# Return not found status code and message to the user
+		raise HTTPException(
+			status_code=status.HTTP_404_NOT_FOUND,
+			detail=f'The user with the id {user_id} is not available. Please '
+			       f'try another user id number.')
+
+	# Return the user specified by the id entered
+	return user
