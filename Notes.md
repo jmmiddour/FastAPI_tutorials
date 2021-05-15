@@ -385,7 +385,7 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
   
       - `get_db` is a function we will need to create above the post request method to get the database connection.
   
-  - In the `main.py` file, need to add some new functionallity to the `create()` method, so it now looks like this:
+  - In the `main.py` file, need to add some new functionality to the `create()` method, so it now looks like this:
   
     ```
     def create(request: schemas.Blog, db: Session = Depends(get_db)):
@@ -418,10 +418,65 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **Delete**
 
-  - 
+  - In the `main.py` file, add the following code:
+  
+    ```
+    @app.delete('/blog/{blog_id}', status_code=status.HTTP_204_NO_CONTENT)
+        def destroy(blog_id, db: Session = Depends(get_db)):
+            blog = db.query(models.Blog).filter(models.Blog.id == blog_id)
+    
+            if not blog.first():
+                raise HTTPException(
+			status_code=status.HTTP_404_NOT_FOUND,
+			        detail=f'Blog with the id {blog_id} is not available. Please try '
+			               f'another blog id number.')
+    
+            blog.delete(synchronize_session=False)
+            db.commit()
+            return None
+    ```
+    
+    - `database.query()` has its own `.delete()` method. Need to read up further on the different inputs for `synchronize_session=` in the [sqlalchemy documentation](https://docs.sqlalchemy.org/en/14/orm/session_basics.html#orm-expression-update-delete) but for now we are just going to set it to False.
+  
+      - `False` - don't synchronize the session. This option is the most efficient and is reliable once the session is expired, which typically occurs after a `commit()`, or explicitly using `expire_all()`. Before the expiration, objects that were updated or deleted in the database may still remain in the session with stale values, which can lead to confusing results.
+        
+      - `fetch` - Retrieves the primary key identity of affected rows by either performing a `SELECT` before the `UPDATE` or `DELETE`, or by using `RETURNING` if the database supports it, so that in-memory objects which are affected by the operation can be refreshed with new values (updates) or expunged from the `Session` (deletes). Note that this synchronization strategy is not available if the given `update()` or `delete()` construct specifies columns for UpdateBase. `returning()` explicitly.
+  
+      - `evaluate` - Evaluate the `WHERE` criteria given in the `UPDATE` or `DELETE` statement in Python, to locate matching objects within the `Session`. This approach does not add any round trips and in the absence of `RETURNING` support is more efficient. For `UPDATE` or `DELETE` statements with complex criteria, the `evaluate` strategy may not be able to evaluate the expression in Python and will raise an error. If this occurs, use the `fetch` strategy for the operation instead.
+  
+        - **WARNING:**
+  
+          The `evaluate` strategy should be avoided if an `UPDATE` operation is to run on a `Session` that has many objects which have been expired, because it will necessarily need to refresh those objects as they are located which will emit a `SELECT` for each one. The Session may have expired objects if it is being used across multiple `Session.commit()` calls, and the `Session.expire_on_commit` flag is at its default value of `True`.
 
 - **Update**
 
+  - In the `main.py` file do the following code:
+    
+    ```
+    @app.put('/blog/{blog_id}', status_code=status.HTTP_202_ACCEPTED)
+        def update(blog_id, request: schemas.Blog, db: Session = Depends(get_db)):
+            blog = db.query(models.Blog).filter(models.Blog.id == blog_id)
+    
+            if not blog.first():
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f'Blog with the id {blog_id} is not available. Please try '
+                           f'another blog id number.')
+    
+            blog.update(dict(request))
+            db.commit()
+            return f'Blog {blog_id} has been successfully updated!'
+    ```
+    
+    - Ran into an issue with the update query. On the video he states to code it `...update(request)` but when trying to run it that way, I was getting an error: 
+
+      ```
+      AttributeError: 'Blog' object has no attribute 'items'
+      ```
+      
+      After doing some research on this issue, I found out that it has something to do with the differences in the version of SQLAlchemy that he is using versus me. He is using v1.3, and I am using the newest version which is v1.4.
+  
+      In order to fix this bug, I just need to code it as: `...update(vars(request))` which the `vars()` function is a python builtin and returns the `__dict__` attribute of the given object, if it has one, otherwise, it will raise a `TypeError` exception. 
 
 ### Responses
 
@@ -478,19 +533,63 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
                      f'another blog id number.')
       ```
 
-- **Return Response**
-
-
 - **Define response model**
 
+  - [FastAPI Documentation](https://fastapi.tiangolo.com/tutorial/response-model/)
+
+  - A response model is pydantic model that determines what is returned to the user from the database.
+  
+  - The code for the response model will be found in the `schemas.py` file.
+  
+  - The way that you define what response model you want for each path is: `@app.<method>('<path>', response_model=schemas.<schema class>`
+  
+  - If you have multiple queries that you need to show the user at once:
+  
+    - Import the `List` method from the `typing` library
+  
+    - Then the way you would define the response model for multiples is: `@app.<method>('<path>', response_model=List[schemas.<schema class>]`
 
 ### User and Password
 
 - **Create user**
 
+  - In the `schemas.py` file, need to create a schema for user:
+    
+    ```
+    class User(BaseModel):
+        name: str
+        email: str
+        password: str
+    ```
+    
+  - In the `models.py` file, need to define a new model for the user table in the database:
+  
+    ```
+    class User(Base):
+        __tablename__ = 'users'
+    
+        id = Column(Integer, primary_key=True, index=True)
+        name = Column(String)
+        email = Column(String)
+        password = Column(String)
+    ```
+
+  - Now in the `main.py` file, create the path for creating the user:
+  
+    ```
+    @app.post('/user')
+    def create_user(request: schemas.User, db: Session = Depends(get_db)):
+        new_user = models.User(name=request.name, email=request.email,
+                               password=request.password)
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return new_user
+    ```
 
 - **Hash user password**
 
+  - 
 
 - **Show single user**
 
