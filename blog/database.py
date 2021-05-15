@@ -1,3 +1,7 @@
+"""
+This file contains all the contention points for the database
+"""
+
 # Import create_engine
 from sqlalchemy import create_engine
 
