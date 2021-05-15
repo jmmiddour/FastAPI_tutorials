@@ -17,6 +17,13 @@ from .database import engine, LocalSession
 # Import Session from SQLAlchemy
 from sqlalchemy.orm import Session
 
+# # Import CryptContext from passlib to hash the passwords
+# from passlib.context import CryptContext
+# ^-- Comment the above out because we moved it to hashing.py
+
+# Import our hashing function from the hashing.py file
+from .hashing import Hash
+
 # Instantiate FastAPI
 app = FastAPI()
 
@@ -170,11 +177,39 @@ def show_blog(blog_id, response: Response, db: Session = Depends(get_db)):
 	return blog
 
 
+# # Instantiate CryptContext to hash passwords
+# pwd_cxt = CryptContext(schemes=['bcrypt'], deprecated='auto')
+# ^-- Comment the above out because we moved it to hashing.py
+
+
+# # Create the user path, no hashing of password
+# @app.post('/user')
+# def create_user(request: schemas.User, db: Session = Depends(get_db)):
+# 	# Create the new user
+# 	new_user = models.User(name=request.name, email=request.email,
+# 	                       password=request.password)
+# 	# Add the new user to the database
+# 	db.add(new_user)
+# 	# Commit the changes to the database
+# 	db.commit()
+# 	# Refresh the database to reflect the changes
+# 	db.refresh(new_user)
+# 	# Return the new user just entered to the user
+# 	return new_user
+
+
+# Create the user path with hashing of passwords
 @app.post('/user')
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
+	# # Hash the password when it is passed in by the user
+	# hashed_pwd = pwd_cxt.hash(request.password)
+	# ^-- Comment the above out because we moved it to hashing.py
 	# Create the new user
+	# new_user = models.User(name=request.name, email=request.email,
+	#                        password=hashed_pwd)
+	# ^-- Commented the above out because we created a class in hashing.py
 	new_user = models.User(name=request.name, email=request.email,
-	                       password=request.password)
+	                       password=Hash.bcrypt(request.password))
 	# Add the new user to the database
 	db.add(new_user)
 	# Commit the changes to the database
