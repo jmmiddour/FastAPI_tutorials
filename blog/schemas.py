@@ -48,3 +48,10 @@ class User(BaseModel):
 	name: str
 	email: str
 	password: str
+
+
+# Create another class for the User schema to return only name and email
+class ShowUser(BaseModel):
+	# Define the data types of the fields to return to the user
+	name: str
+	email: str
