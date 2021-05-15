@@ -1,3 +1,10 @@
+"""
+This file contains all of the routes/paths for the API.
+"""
+
+# Import the List type from typing
+from typing import List
+
 # Import FastApi
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 
@@ -10,23 +17,11 @@ from .database import engine, LocalSession
 # Import Session from SQLAlchemy
 from sqlalchemy.orm import Session
 
-# Import BaseModel from pydantic for the class
-# from pydantic import BaseModel
-
-
 # Instantiate FastAPI
 app = FastAPI()
 
-
 # Create the database
 models.Base.metadata.create_all(engine)
-
-
-# # Create a class for the blog
-# # Moved the class and BaseModel module to the schemas.py file
-# class Blog(BaseModel):
-# 	title: str
-# 	body: str
 
 
 # # Create a post request method
@@ -47,7 +42,7 @@ def get_db():
 
 	# Try this first...
 	try:
-		# Creates a "generator" function to keep the database connection alive
+		# A "generator" function to keep the database connection alive
 		yield db
 
 	# Lastly, do this...
@@ -83,8 +78,58 @@ def create(request: schemas.Blog, db: Session = Depends(get_db)):
 	return new_blog
 
 
+# Create a new path request method to remove a blog
+@app.delete('/blog/{blog_id}', status_code=status.HTTP_204_NO_CONTENT)
+# Create the method to remove it from the database
+def destroy(blog_id, db: Session = Depends(get_db)):
+	# Use the query function to locate the blog
+	blog = db.query(models.Blog).filter(models.Blog.id == blog_id)
+
+	# Check edge case of invalid blog id entered
+	if not blog.first():
+		# Return not found status code and message to the user
+		raise HTTPException(
+			status_code=status.HTTP_404_NOT_FOUND,
+			detail=f'Blog with the id {blog_id} is not available. Please try '
+			       f'another blog id number.')
+
+	# Now we know the blog exists, we can use the delete function to remove it
+	blog.delete(synchronize_session=False)
+	# Commit the changes to the database
+	db.commit()
+	# Don't need to return anything, just closing the function
+	# return {'detail': f"Blog {blog_id} has been successfully deleted!"}
+	return None
+
+
+# Create a new path to update a blog based on its id
+@app.put('/blog/{blog_id}', status_code=status.HTTP_202_ACCEPTED)
+# Create the method to update the blog
+# The request: schemas.Blog is just getting the schema of the blog table to
+#   create the proper output format on the api.
+def update(blog_id, request: schemas.Blog, db: Session = Depends(get_db)):
+	# Use the query function to locate the blog
+	blog = db.query(models.Blog).filter(models.Blog.id == blog_id)
+
+	# Check edge case of invalid blog id entered
+	if not blog.first():
+		# Return not found status code and message to the user
+		raise HTTPException(
+			status_code=status.HTTP_404_NOT_FOUND,
+			detail=f'Blog with the id {blog_id} is not available. Please try '
+			       f'another blog id number.')
+
+	# Now use the update function to update the blog if it exists
+	# Can use `vars()` or `dict()` to fix error here
+	blog.update(dict(request))
+	# Commit the changes to the database
+	db.commit()
+	# Return a message letting the user know it was successful
+	return f'Blog {blog_id} has been successfully updated!'
+
+
 # Add a new route/path request method to get all the blogs from the database
-@app.get('/blog')
+@app.get('/blog', response_model=List[schemas.ShowBlog])
 # Define the method to get all the blogs
 def get_blogs(db: Session = Depends(get_db)):
 	# Query the database to get all the blogs
@@ -94,7 +139,7 @@ def get_blogs(db: Session = Depends(get_db)):
 
 
 # Add a new route/path request to get a single blog by its id
-@app.get('/blog/{blog_id}', status_code=200)
+@app.get('/blog/{blog_id}', status_code=200, response_model=schemas.ShowBlog)
 # Define the method to get the 1st blog by the id
 def show_blog(blog_id, response: Response, db: Session = Depends(get_db)):
 	# Query the database to get the 1st instance of the blog at specified id
@@ -125,4 +170,16 @@ def show_blog(blog_id, response: Response, db: Session = Depends(get_db)):
 	return blog
 
 
-
+@app.post('/user')
+def create_user(request: schemas.User, db: Session = Depends(get_db)):
+	# Create the new user
+	new_user = models.User(name=request.name, email=request.email,
+	                       password=request.password)
+	# Add the new user to the database
+	db.add(new_user)
+	# Commit the changes to the database
+	db.commit()
+	# Refresh the database to reflect the changes
+	db.refresh(new_user)
+	# Return the new user just entered to the user
+	return new_user
