@@ -64,7 +64,7 @@ def get_db():
 # If you do not know the correct status code, you can use the status method
 #   from fastapi that has a list of all the status codes and their meanings,
 #   like below.
-@app.post('/blog', status_code=status.HTTP_201_CREATED)
+@app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['Blogs'])
 # Create a function to create a new blog post, taking in the title and body
 #   of the blog using pydantic.
 # Doing it this way will give you a request body
@@ -86,7 +86,8 @@ def create(request: schemas.Blog, db: Session = Depends(get_db)):
 
 
 # Create a new path request method to remove a blog
-@app.delete('/blog/{blog_id}', status_code=status.HTTP_204_NO_CONTENT)
+@app.delete('/blog/{blog_id}', status_code=status.HTTP_204_NO_CONTENT,
+            tags=['Blogs'])
 # Create the method to remove it from the database
 def destroy(blog_id, db: Session = Depends(get_db)):
 	# Use the query function to locate the blog
@@ -110,7 +111,8 @@ def destroy(blog_id, db: Session = Depends(get_db)):
 
 
 # Create a new path to update a blog based on its id
-@app.put('/blog/{blog_id}', status_code=status.HTTP_202_ACCEPTED)
+@app.put('/blog/{blog_id}', status_code=status.HTTP_202_ACCEPTED,
+         tags=['Blogs'])
 # Create the method to update the blog
 # The request: schemas.Blog is just getting the schema of the blog table to
 #   create the proper output format on the api.
@@ -136,7 +138,7 @@ def update(blog_id, request: schemas.Blog, db: Session = Depends(get_db)):
 
 
 # Add a new route/path request method to get all the blogs from the database
-@app.get('/blog', response_model=List[schemas.ShowBlog])
+@app.get('/blog', response_model=List[schemas.ShowBlog], tags=['Blogs'])
 # Define the method to get all the blogs
 def get_blogs(db: Session = Depends(get_db)):
 	# Query the database to get all the blogs
@@ -146,7 +148,8 @@ def get_blogs(db: Session = Depends(get_db)):
 
 
 # Add a new route/path request to get a single blog by its id
-@app.get('/blog/{blog_id}', status_code=200, response_model=schemas.ShowBlog)
+@app.get('/blog/{blog_id}', status_code=200, response_model=schemas.ShowBlog,
+         tags=['Blogs'])
 # Define the method to get the 1st blog by the id
 def show_blog(blog_id, response: Response, db: Session = Depends(get_db)):
 	# Query the database to get the 1st instance of the blog at specified id
@@ -199,7 +202,7 @@ def show_blog(blog_id, response: Response, db: Session = Depends(get_db)):
 
 
 # Create the user path with hashing of passwords
-@app.post('/user', response_model=schemas.ShowUser)
+@app.post('/user', response_model=schemas.ShowUser, tags=['Users'])
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
 	# # Hash the password when it is passed in by the user
 	# hashed_pwd = pwd_cxt.hash(request.password)
@@ -221,7 +224,7 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
 
 
 # Create a new path to show user by their id
-@app.get('/user/{user_id}', response_model=schemas.ShowUser)
+@app.get('/user/{user_id}', response_model=schemas.ShowUser, tags=['Users'])
 def get_user(user_id: int, db: Session = Depends(get_db)):
 	# Query the database to the get the user data by the user id
 	user = db.query(models.User).filter(models.User.id == user_id).first()
