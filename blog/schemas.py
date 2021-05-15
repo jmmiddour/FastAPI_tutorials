@@ -55,3 +55,8 @@ class ShowUser(BaseModel):
 	# Define the data types of the fields to return to the user
 	name: str
 	email: str
+
+	# Create a new class for configuration
+	class Config():
+		# Need to set the orm_mode to True or it will raise an error
+		orm_mode = True
