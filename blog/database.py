@@ -16,8 +16,8 @@ SQLALCHEMY_DATABASE_URL = 'sqlite:///./blog.db'
 engine = create_engine(SQLALCHEMY_DATABASE_URL,
                        connect_args={'check_same_thread': False})
 
-# Declare a mapping to the database
-Base = declarative_base()
+# Create the local session global variable
+LocalSession = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
-# Create the local session
-SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+# Declare a mapping to the database global varaible
+Base = declarative_base()
