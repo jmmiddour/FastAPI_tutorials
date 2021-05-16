@@ -64,7 +64,8 @@ def get_db():
 # If you do not know the correct status code, you can use the status method
 #   from fastapi that has a list of all the status codes and their meanings,
 #   like below.
-@app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['Blogs'])
+@app.post('/blog', status_code=status.HTTP_201_CREATED,
+          tags=['Blogs'])
 # Create a function to create a new blog post, taking in the title and body
 #   of the blog using pydantic.
 # Doing it this way will give you a request body
@@ -74,7 +75,8 @@ def create(request: schemas.Blog, db: Session = Depends(get_db)):
 	# # Return to the user, the title and body of their blog post.
 	# return request
 	# Create the new blog
-	new_blog = models.Blog(title=request.title, body=request.body)
+	new_blog = models.Blog(title=request.title, body=request.body,
+	                       user_id=request.user_id)
 	# Add the new blog to the database
 	db.add(new_blog)
 	# Commit the changes to the database
