@@ -669,14 +669,52 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **Define docs tags**
 
+  - [Using Docs Tags in Video](https://youtu.be/7t2alSnE2-I?t=9304)
+  
+  - [FastAPI Documentation - Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/)
+  
+  - [FastAPI Documentation - Use Your Tags](https://fastapi.tiangolo.com/tutorial/metadata/#use-your-tags)
+  
+  - You can add `tags=['<tag name>']` to the parameters of any FastAPI path you create. This will group all the endpoints by the tags you specify. 
 
 ### Relationship
 
+- [Relationships in Video](https://youtu.be/7t2alSnE2-I?t=9478)
+
+- [FastAPI Documentation - Create the relationships](https://fastapi.tiangolo.com/tutorial/sql-databases/?h=relationships#create-the-relationships)
+
+- In order to create any relationships, first you have to import `relationship` from `sqlalchemy.orm` and `ForeignKey` from `sqlalchemy` in the `models.py` file
+
+  - [SQLAlchemy Documentation - Relationship API](https://docs.sqlalchemy.org/en/14/orm/relationship_api.html?highlight=relationship#sqlalchemy.orm.relationship)
+  
+  - [SQLAlchemy Documentation - Defining Foreign Keys](https://docs.sqlalchemy.org/en/14/core/constraints.html#defining-foreign-keys)
+
 - **Define User to Blog relationship**
 
+  - In the `models.py` file, add a new variable to the `User` class at the end of the class: `blogs = relationship('Blog', back_populates='creator')`
+  
+  - Then in the `schemas.py` file, need to add to the `ShowUser` class: `blogs: List[Blog] = []`
+  
+  - Then need to also add the following to the class `Blog`:
+  
+    ```
+    user_id: int
+    
+    class Config():
+        orm_mode = True
+    ```
 
 - **Define Blog to User relationship**
 
+  - In the `models.py` file, add a new variable to the `Blog` class at the end of the class: `creator = relationship('User', back_populates='blogs')`
+  
+  - Also need to add another column before that with the `ForeignKey` as so: `user_id = Column(Integer, ForeignKey('users.id'))`
+  
+  - Then in the `schemas.py` file, need to add to the `ShowBlog` class: `creator: ShowUser` and move the whole class of `ShowBlog` after `ShowUser` in the file.
+  
+- Also need to add the `user_id` field to the path where you create the blog: `user_id=request.user_id`
+  
+- Once you finish writing all the code, you will need to clear out all the data currently in the database. If you don't, you will get an error because we added a new column that was not there when we initially created the database. This is why it is *VERY IMPORTANT* to know what columns you are going to need for a table during your initial setup. Otherwise, you will just need to create a new table just to connect the 2 tables together.
 
 ### Refactor for Bigger Application
 
