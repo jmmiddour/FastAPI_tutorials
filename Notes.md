@@ -774,6 +774,11 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **API Router with Parameters**
 
+  - [API Router Operators in video](https://youtu.be/7t2alSnE2-I?t=11049)
+
+  - Instead of having to put the `tags=['<name of tag>']'` in each route you can just add it as a parameter to the `APIRouter`.
+
+  - Can also add the `prefix='<prefix used on all paths>'` parameter in the `APIRouter` and just use `'/'` in place of the prefix in the path.
 
 ### Authentication using JWT (JSON Web Token)
 
