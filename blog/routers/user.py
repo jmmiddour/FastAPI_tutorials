@@ -8,7 +8,10 @@ from .. import schemas, database, models
 from ..hashing import Hash
 
 # Initialize the APIRouter
-router = APIRouter(tags=['Users'])
+router = APIRouter(
+	prefix='/user',
+	tags=['Users']
+)
 
 # Create a variable for the get_db function
 get_db = database.get_db
@@ -20,7 +23,7 @@ Then paste them below and change `app` to `router` --v
 
 
 # Create the user path with hashing of passwords
-@router.post('/user', response_model=schemas.ShowUser)
+@router.post('/', response_model=schemas.ShowUser)
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
 	# # Hash the password when it is passed in by the user
 	# hashed_pwd = pwd_cxt.hash(request.password)
@@ -42,7 +45,7 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
 
 
 # Create a new path to show user by their id
-@router.get('/user/{user_id}', response_model=schemas.ShowUser)
+@router.get('/{user_id}', response_model=schemas.ShowUser)
 def get_user(user_id: int, db: Session = Depends(get_db)):
 	# Query the database to the get the user data by the user id
 	user = db.query(models.User).filter(models.User.id == user_id).first()
