@@ -25,3 +25,20 @@ LocalSession = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 # Declare a mapping to the database global varaible
 Base = declarative_base()
+
+
+# Create a function to get the get the database connection to create a
+#   current session
+def get_db():
+    # Create a variable to hold the local session in
+    db = LocalSession()
+
+    # Try this first...
+    try:
+        # A "generator" function to keep the database connection alive
+        yield db
+
+    # Lastly, do this...
+    finally:
+        # Close the database connection when finished
+        db.close()
