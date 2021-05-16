@@ -720,6 +720,57 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **API Router**
 
+  - [API Router in video](https://youtu.be/7t2alSnE2-I?t=10274)
+  
+  - [FastAPI Documentation - Bigger Applications - Multiple Files](https://fastapi.tiangolo.com/tutorial/bigger-applications/)
+  
+  - [FastAPI Documentation - Import the APIRouter](https://fastapi.tiangolo.com/tutorial/bigger-applications/#import-the-apirouter)
+  
+  - Need to first create a new directory in the current directory where your API is running from. In this case, we need to create a new directory `routers` in the `blog` directory.
+  
+  - Then need to create some files in the `routers` directory.
+    
+    - `__init__.py`
+  
+    - `user.py`
+  
+      - Need to move all the complete functions from `main.py` and change `app` to `router` that are related to the user.
+  
+        - `@app.post('/user', response_model=schemas.ShowUser, tags=['Users'])`
+    
+        - `@app.get('/user/{user_id}', response_model=schemas.ShowUser, tags=['Users'])`
+  
+    - `blog.py`
+  
+      - Need to move all the complete functions from `main.py` and change `app` to `router` that are related to the blog.
+        
+        - `@app.get('/blog', response_model=List[schemas.ShowBlog], tags=['Blogs'])`
+        
+        - `@app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['Blogs'])`
+  
+        - `@app.delete(
+	'/blog/{blog_id}', status_code=status.HTTP_204_NO_CONTENT, tags=['Blogs']
+)`
+        
+        - `@app.put(
+	'/blog/{blog_id}', status_code=status.HTTP_202_ACCEPTED, tags=['Blogs']
+)`
+          
+        - `@router.get(
+	'/blog/{blog_id}', status_code=200, response_model=schemas.ShowBlog,
+	tags=['Blogs']
+)`
+
+      - Need to move the `get_db()` function from `main.py` to `database.py` at the bottom of the file.
+  
+      - Need to also make sure that we have all the imports we need.
+  
+        ```
+        from typing import List
+        from fastapi import APIRouter, Depends, status, HTTPException
+        from sqlalchemy.orm import Session
+        from .. import schemas, database, models
+        ```
 
 - **API Router with Parameters**
 
