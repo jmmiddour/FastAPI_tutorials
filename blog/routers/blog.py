@@ -39,14 +39,14 @@ If you do not know the correct status code, you can use the status method
 	like below.
 """
 @router.post('/', status_code=status.HTTP_201_CREATED)
-"""
-Create a function to create a new blog post, taking in the title and body
-  of the blog using pydantic.
-Doing it this way will give you a request body
-Doing the `db: Session = Depends(get_db)` makes the default value for the
-  db parameter dependent upon the `get_db` function defined above.
-"""
 def create(request: schemas.Blog, db: Session = Depends(get_db)):
+	"""
+	Create a function to create a new blog post, taking in the title and body
+		of the blog using pydantic.
+	Doing it this way will give you a request body
+	Doing the `db: Session = Depends(get_db)` makes the default value for the
+		db parameter dependent upon the `get_db` function defined above.
+	"""
 	return blog.create(request, db)
 
 
@@ -59,12 +59,12 @@ def destroy(blog_id, db: Session = Depends(get_db)):
 
 # Create a new path to update a blog based on its id
 @router.put('/{blog_id}', status_code=status.HTTP_202_ACCEPTED)
-"""
-Create the method to update the blog
-The request: schemas.Blog is just getting the schema of the blog table to
-    create the proper output format on the api.
-"""
 def update(blog_id, request: schemas.Blog, db: Session = Depends(get_db)):
+	"""
+	Create the method to update the blog
+	The request: schemas.Blog is just getting the schema of the blog table to
+		create the proper output format on the api.
+	"""
 	return blog.update(blog_id, request, db)
 
 
