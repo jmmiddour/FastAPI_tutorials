@@ -85,3 +85,14 @@ class ShowBlog(BaseModel):
 class Login(BaseModel):
 	username: str
 	password: str
+
+
+# Create a class for the token schema
+class Token(BaseModel):
+	access_token: str
+	token_type: str
+
+
+# Create a class for the token data schema
+class TokenData(BaseModel):
+	username: Optional[str] = None
