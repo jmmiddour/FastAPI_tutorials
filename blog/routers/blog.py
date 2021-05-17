@@ -6,7 +6,7 @@ This file contains all the blog routes/paths
 from typing import List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
-from .. import schemas, database
+from .. import schemas, database, oauth2
 from ..utilities import blog
 
 # Initialize the APIRouter
@@ -26,7 +26,10 @@ Then paste them below and change `app` to `router` --v
 
 # Add a new route/path request method to get all the blogs from the database
 @router.get('/', response_model=List[schemas.ShowBlog])
-def get_blogs(db: Session = Depends(get_db)):
+def get_blogs(
+		db: Session = Depends(get_db),
+		current_user: schemas.User = Depends(oauth2.get_current_user)
+):
 	return blog.get_all(db)
 
 
