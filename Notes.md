@@ -824,10 +824,47 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
   
   - In the `routers` directory, create a new file `login.py`
   
-  - 
+    - Create the router.
+  
+    - Create a post request method for the login path.
+  
+    - Query the user from the database.
+  
+    - Check for edge case of invalid username (email).
+  
+    - In the `hashing.py` file, need to create a verify method:
+  
+      ```
+      def verify(self, hashed_pwd, plain_pwd):
+          """
+          Function to verify the stored hashed password matches the hash for
+              the inputted password.
+          :param hashed_pwd: str: hashed password that is stored in the database
+          :param plain_pwd: user inputted password through the API
+          :return: bool: True if there is a match, False if there is no match.
+          """
+          return pwd_cxt.verify(plain_pwd, hashed_pwd)
+      ```
+  
+    - Need to verify the password, as follows:
+  
+      ```
+      if not Hash.verify(user.password, request.password):
+      raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND,
+          detail='Invalid Password! Please try again!'
+      )
+      ```
+  
+  - In the `main.py` file, add a new route to the login router.
+  
+  - In the `schemas.py` file, add a class for the pydantic model for the login logic.
 
 - **Return JWT access token**
 
+  - [JWT Access Token](https://youtu.be/7t2alSnE2-I?t=12508)
+  
+  - 
 
 - **Routes behind authentication**
 
