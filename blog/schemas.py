@@ -9,7 +9,7 @@ You use a Pydantic model to create the way the response body is returned,
 """
 
 # Import List from typing library
-from typing import List
+from typing import List, Optional
 
 # Import BaseModel from pydantic for the class
 from pydantic import BaseModel
