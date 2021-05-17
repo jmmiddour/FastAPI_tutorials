@@ -3,9 +3,9 @@ The file contains
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-
-from .. import schemas, database, models, JWT_token
+from .. import database, models, JWT_token
 from ..hashing import Hash
 
 router = APIRouter(
@@ -14,7 +14,10 @@ router = APIRouter(
 
 
 @router.post('/login')
-def login(request: schemas.Login, db: Session = Depends(database.get_db)):
+def login(
+		request: OAuth2PasswordRequestForm = Depends(),
+		db: Session = Depends(database.get_db)
+):
 	user = db.query(models.User).filter(
 		models.User.email == request.username).first()
 
