@@ -5,7 +5,7 @@ This file contains the code needed for oauth2 authentication.
 # Imports:
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-import JWT_token
+from . import JWT_token
 
 
 # Create the oauth2_scheme to get the token
