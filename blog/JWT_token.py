@@ -27,7 +27,13 @@ def create_access_token(data: dict):
 
 
 def verify_token(token, credentials_exception):
+	"""
+	Function to verify the token for the current session and user.
 
+	:param token: str: the current user's session token
+	:param credentials_exception: Error to raise token is invalid
+	:return: bool: True if the token has been verified, False if not
+	"""
 	try:
 		payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 		username: str = payload.get("sub")
