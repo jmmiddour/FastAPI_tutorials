@@ -5,7 +5,7 @@ The file contains
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from .. import schemas, database, models
+from .. import schemas, database, models, JWT_token
 from ..hashing import Hash
 
 router = APIRouter(
@@ -31,7 +31,6 @@ def login(request: schemas.Login, db: Session = Depends(database.get_db)):
 		)
 
 	# Generate a JWT token and return
+	access_token = JWT_token.create_access_token(data={"sub": user.email})
 
-
-	return user
-
+	return {"access_token": access_token, "token_type": "bearer"}
