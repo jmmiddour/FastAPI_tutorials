@@ -864,7 +864,79 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
   - [JWT Access Token](https://youtu.be/7t2alSnE2-I?t=12508)
   
-  - 
+  - Add `python-jose` to `requirements.txt` and reinstall requirements file.
+  
+  - Create a new file `JWT_token.py`:
+  
+    - Import `jwt` from `jose` package.
+  
+    - Copy and paste the `SECRET_KEY`, `ALGORITHM`, and `ACCESS_TOKEN_EXPIRE_MINUTES` from [FastAPI
+OAuth2 with Password (and hashing), Bearer with JWT tokens](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/) into the `JWT_token.py` file.
+      
+    - Then need to create the `create_access_token` function:
+  
+      ```
+      def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+          """
+          Function to create a JWT token.
+      
+          :param data: dict: the data to be encoded
+          :param expires_delta: Expiration time on the token
+          :return: data encoded as a JWT token
+          """
+          to_encode = data.copy()
+      
+          if expires_delta:
+              expire = datetime.utcnow() + expires_delta
+      
+          else:
+              expire = datetime.utcnow() + timedelta(minutes=15)
+      
+          to_encode.update({"exp": expire})
+          encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+      
+          return encoded_jwt
+      ```
+      
+    - When you create the `create_access_token` function you can do it without the optional parameter of the `expires_delta` and just hard code it with the `ACCESS_TOKEN_EXPIRE_MINUTES` global variable in the file already:
+  
+      ```
+      def create_access_token(data: dict):
+          """
+          Function to create a JWT token.
+      
+          :param data: dict: the data to be encoded
+          :return: data encoded as a JWT token
+          """
+          to_encode = data.copy()
+      
+          expire = datetime.utcnow() + timedelta(minutes=wa)
+      
+          to_encode.update({"exp": expire})
+          encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+      
+          return encoded_jwt
+      ```
+
+  - In the `schemas.py` file, need to add the pydantic model for `Token` and `TokenData`
+  
+    ```
+    class Token(BaseModel):
+        access_token: str
+        token_type: str
+    
+    
+    class TokenData(BaseModel):
+        username: Optional[str] = None
+    ```
+    
+  - In the `login.py` file need to add the following into the login route/path:
+  
+    ```
+    access_token = create_access_token(data={"sub": user.username})
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+    ```
 
 - **Routes behind authentication**
 
