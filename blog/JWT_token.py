@@ -10,22 +10,15 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+def create_access_token(data: dict):
 	"""
 	Function to create a JWT token.
 
 	:param data: dict: the data to be encoded
-	:param expires_delta: Expiration time on the token
 	:return: data encoded as a JWT token
 	"""
 	to_encode = data.copy()
-
-	if expires_delta:
-		expire = datetime.utcnow() + expires_delta
-
-	else:
-		expire = datetime.utcnow() + timedelta(minutes=15)
-
+	expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 	to_encode.update({"exp": expire})
 	encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
