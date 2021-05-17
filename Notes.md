@@ -779,6 +779,37 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
   - Instead of having to put the `tags=['<name of tag>']'` in each route you can just add it as a parameter to the `APIRouter`.
 
   - Can also add the `prefix='<prefix used on all paths>'` parameter in the `APIRouter` and just use `'/'` in place of the prefix in the path.
+  
+- **[Blog and User Repositories](https://youtu.be/7t2alSnE2-I?t=11244)**
+
+  - The routers should actually only be for the routing/paths. 
+  
+  - The `repository` directory will be where you have all your functions. Another way to look at it is that this is where you will store all the code that is actually doing the "work". I will actually call mine `utilities` because that makes more sense to me or maybe name it "helpers" or something of the like.
+  
+  - In the `utilities` directory create a file `blog.py` where you will copy into it, all the "work" that needs to be done for the blog routes/paths. Then, import `blog` from `..utilities` into the `blog.py` file in the `routers` directory and just return the function that does the work for that route/path.
+  
+    - Example:
+  
+      `utilities\blog.py`
+
+      ```
+      def get_all(db):
+        """
+        Function to get all the blogs from the database.
+        :param db: database
+        :return: JSON file with all blog entries from the database
+        """
+        blogs = db.query(models.Blog).all()
+        return blogs
+      ```
+      
+      `routers\blog.py`
+
+      ```
+      @router.get('/', response_model=List[schemas.ShowBlog])
+      def get_blogs(db: Session = Depends(get_db)):
+          return blog.get_all(db)
+      ```
 
 ### Authentication using JWT (JSON Web Token)
 
@@ -787,6 +818,13 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **Login and verify password**
 
+  - [Login and Verify Password](https://youtu.be/7t2alSnE2-I?t=11889)
+  
+  - [OAuth2 with Password (and hashing), Bearer with JWT tokens](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/)
+  
+  - In the `routers` directory, create a new file `login.py`
+  
+  - 
 
 - **Return JWT access token**
 
