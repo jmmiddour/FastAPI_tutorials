@@ -79,3 +79,9 @@ class ShowBlog(BaseModel):
 	class Config():
 		# Need to set the orm_mode to True or it will raise an error
 		orm_mode = True
+
+
+# Create a class for the Login schema
+class Login(BaseModel):
+	username: str
+	password: str
