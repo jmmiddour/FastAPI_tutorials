@@ -95,4 +95,4 @@ class Token(BaseModel):
 
 # Create a class for the token data schema
 class TokenData(BaseModel):
-	username: Optional[str] = None
+	email: Optional[str] = None
