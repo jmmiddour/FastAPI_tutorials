@@ -12,7 +12,7 @@ from . import models
 from .database import engine
 
 # Import the blog routes and the user routes from the routers directory
-from .routers import blog, user
+from .routers import blog, user, login
 
 # Instantiate FastAPI
 app = FastAPI()
@@ -21,8 +21,9 @@ app = FastAPI()
 models.Base.metadata.create_all(engine)
 
 # Create the routes to the routers files
-app.include_router(blog.router)
+app.include_router(login.router)
 app.include_router(user.router)
+app.include_router(blog.router)
 
 
 ######################################################################
