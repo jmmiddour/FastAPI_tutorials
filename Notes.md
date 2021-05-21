@@ -69,6 +69,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 ### Install and Setup
 
+[Install and Setup in the video](https://youtu.be/7t2alSnE2-I?t=608)
+
 - Verify that you have Python 3.6 or greater installed on your machine
 
 - First set up a virtual environment, not a requirement, but it is best practice to do so in order to avoid any conflicts.
@@ -91,6 +93,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 ### Break it Down... How is it Structured?
 
+[Break it Down in the video](https://youtu.be/7t2alSnE2-I?t=1353)
+
 - Create a `.gitignore` file and add any files that are not needed to upload to GitHub
 
 - Start by initializing a git repository, with the following commands in the terminal:
@@ -107,6 +111,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 ### Basic Concepts
 
 - **Path Parameters:**
+
+  - [Path Parameters in the video](https://youtu.be/7t2alSnE2-I?t=1846)
   
   - If you want to have both dynamic and static routes (paths) you have to be mindful of placement within the code base.
     
@@ -135,6 +141,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
   - FastAPI reads code / paths from top to bottom. Similar to how Python reads if statements. It will first look at the first path, if the path entered does not match, it ignores the code for that path and moves to the next path. If that path still does not match, it moves to the next path, and so on until it finds the matching path or reaches the end of the code. This is why placement of static and dynamic paths are so important.
 
 - **API Docs - Swagger/Redoc:**
+
+  - [API Docs - Swagger/redocs in the video](https://youtu.be/7t2alSnE2-I?t=2499)
 
   - ***Swagger UI:***
     
@@ -187,6 +195,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
     - This is also automatically created when using FastAPI
 
 - **Query Parameters:**
+
+  - [Query Parameters in the video](https://youtu.be/7t2alSnE2-I?t=2756)
   
   - Can add a query parameter to the url to limit the number of results like so:
     
@@ -254,6 +264,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **Request Body:**
 
+  - [Request Body in the video](https://youtu.be/7t2alSnE2-I?t=3359)
+
   - `@app.post()` use this request method to "create" something.
   
   - When you need to send data from the client (browser) to your API, you send it as a **"request body"**. A **request body** is data sent by the client to your API. A **response body** is the data your API sends to the client. Your API almost always has to send a **response body** but the clients don't necessarily need to send **request bodies** all the time.
@@ -284,12 +296,16 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 ### Intermediate Concepts
 
 - **Debugging FastAPI**
+
+  - [How to Debug in the video](https://youtu.be/7t2alSnE2-I?t=3838)
   
   - Using the "breakpoint" dot in your IDE:
 
     - When you add the red "breakpoint" dot between the number and your code, that means that when you run the debugger it will show what your code has done up to that point and that is where it will stop until you tell it to continue on.
 
 - **Pydantic Schemas**
+
+  - [Pydantic Schema in the video](https://youtu.be/7t2alSnE2-I?t=4247)
 
   - FastAPI does not require you to use a SQL (relational) database. You can use any database you want to. 
   
@@ -323,6 +339,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **SQLAlchemy Database Connection**
 
+  - [Database Connection in the video](https://youtu.be/7t2alSnE2-I?t=4799)
+
   - Create a new file (`database.py`) in the blog directory for your database code.
   
     - Import `create_engine` from `sqlalchemy`.
@@ -340,6 +358,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
     - Declare the mapping to the database using the above method
 
 - **Models and Table**
+
+  - [Model & Table in the video](https://youtu.be/7t2alSnE2-I?t=5138)
 
   - Open TablePlus and click on "Create a new connection..." on the bottom of the window
 
@@ -370,6 +390,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 ### Database Tasks
 
 - **Store blog to database**
+
+  - [Store Blog to Database in the video](https://youtu.be/7t2alSnE2-I?t=5607)
   
   - In the `main.py` file, need to import some new libraries:
   
@@ -398,6 +420,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **Get blogs from database**
 
+  - [Get blogs from Database in the video](https://youtu.be/7t2alSnE2-I?t=5932)
+
   - Add a new get request method to the `main.py` file to list all of the blogs in the database in a JSON format:
   
     ```
@@ -417,6 +441,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
     ```
 
 - **Delete**
+
+  - [Delete a blog in the video](https://youtu.be/7t2alSnE2-I?t=6826)
 
   - In the `main.py` file, add the following code:
   
@@ -450,6 +476,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **Update**
 
+  - [Update a blog in the video](https://youtu.be/7t2alSnE2-I?t=7114)
+
   - In the `main.py` file do the following code:
     
     ```
@@ -481,6 +509,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 ### Responses
 
 - **Exception and Status Code**
+
+  - [Exception & Status Code in the video](https://youtu.be/7t2alSnE2-I?t=6209)
 
   - When creating something the response code should be `201` not `200`.
   
@@ -535,6 +565,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 
 - **Define response model**
 
+  - [Response Model in the video](https://youtu.be/7t2alSnE2-I?t=7683)
+
   - [FastAPI Documentation](https://fastapi.tiangolo.com/tutorial/response-model/)
 
   - A response model is pydantic model that determines what is returned to the user from the database.
@@ -552,6 +584,8 @@ The creator of FastAPI [Sebastian Ramirez's GitHub](https://github.com/tiangolo/
 ### User and Password
 
 - **Create user**
+
+  - [Create User in the video](https://youtu.be/7t2alSnE2-I?t=8156)
 
   - In the `schemas.py` file, need to create a schema for user:
     
@@ -927,7 +961,7 @@ OAuth2 with Password (and hashing), Bearer with JWT tokens](https://fastapi.tian
     
     
     class TokenData(BaseModel):
-        username: Optional[str] = None
+        email: Optional[str] = None
     ```
     
   - In the `login.py` file need to add the following into the login route/path:
@@ -940,7 +974,135 @@ OAuth2 with Password (and hashing), Bearer with JWT tokens](https://fastapi.tian
 
 - **Routes behind authentication**
 
+  - [Routes behind Authentication in video](https://youtu.be/7t2alSnE2-I?t=12984)
+  
+  - [OAuth2 with Password (and hashing), Bearer with JWT tokens](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/)
+  
+  - Create a new file `oauth2.py` in the `blog` directory.
+  
+    - Need the following imports:
+    
+      ```
+      from fastapi import Depends, HTTPException, status
+      from fastapi.security import OAuth2PasswordBearer
+      import JWT_token
+      ```
+  
+    - Create the oauth2_scheme: `oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")`
+  
+    - Need to create a function to get the current user:
+  
+      ```
+      def get_current_user(token: str = Depends(oauth2_scheme)):
+          """
+          Function to get the current logged in user based on the token passed in.
+      
+          :param token: str: gets the token from the oauth2_scheme
+          :return: the current user after verification
+          """
+          credentials_exception = HTTPException(
+              status_code=status.HTTP_401_UNAUTHORIZED,
+              detail="Could not validate credentials",
+              headers={"WWW-Authenticate": "Bearer"},
+          )
+      
+          return JWT_token.verify_token(token, credentials_exception)
+      ```
+      
+  - In the `JWT_token.py` file, create a function to verify the token:
+  
+    ```
+    def verify_token(token, credentials_exception):
+        """
+        Function to verify the token for the current session and user.
+    
+        :param token: str: the current user's session token
+        :param credentials_exception: Error to raise if token is invalid
+        :return: bool: True if the token has been verified, False if not
+        """
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            username: str = payload.get("sub")
+    
+            if username is None:
+                raise credentials_exception
+    
+            token_data = schemas.TokenData(email=email)
+    
+        except JWTError:
+            raise credentials_exception
+    ```
+
+  - In the `blog.py` file in the `routers` directory, add `oauth2` to the imports.
+  
+    - Then in the route/path for `get_blogs` add the parameter: `current_user: schemas.User = Depends(oauth2.get_current_user)`
+  
+  - In the `login.py` file in the `routers` directory, add `OAuth2PasswordRequestForm` from `fastapi.security` to the imports
+  
+    - Then need to change the `request` parameter from `request: schemas.Login` to `request: OAuth2PasswordRequestForm = Depends()` in the login route/path.
+  
+  - Then just add the `current_user: schemas.User = Depends(oauth2.get_current_user)`parameter to all the routes/paths that you want to only run if the user has been logged in first.
 
 ### Deploy FastAPI
 
 - **Using Deta.sh website to deploy**
+
+[Deploy using Deta.sh in Video](https://youtu.be/7t2alSnE2-I?t=13860)
+
+[FastAPI Documentation - Deploy FastAPI on Deta](https://fastapi.tiangolo.com/deployment/deta/)
+
+- First need to create a free account on [Deta](https://www.deta.sh/?ref=fastapi)
+
+  - Enter a username, password, and email address.
+  
+  - Must confirm through email confirmation link before you can sign in.
+  
+  - Once your account is confirmed, you can log in to your account, and the first thing you see is a Welcome popup that lets you see your key for the first "default" project they already created for you to get you started. 
+    
+  - When you click to show the key, make sure you have it saved somewhere because they say that it will only be shown once.
+  
+  - There is also a link at the top, when you close the "key" window, where you can access the [documentation](https://docs.deta.sh/docs/micros/getting_started/).
+  
+- Need to now install the CLI.
+
+  - In the terminal:
+  
+    - `curl -fsSL https://get.deta.dev/cli.sh | sh` installs the Deta CLI (have to pause my Kaspersky to install and do in the git bash window, outside of PyCharm)
+  
+    - `deta --help` will ensure that it is installed properly. This is not working for me, and I can not get past this point on my machine and can not find anything on Google to help. I will still add the rest of the steps below for the future.
+  
+    - `deta login` opens a webpage GUI for you to log in to your deta account. Once you are logged in, you will see a message in the terminal that says `Logged in successfully.`
+  
+    - `deta new` creates a new micro with all the files currently in our working directory and adds them to the server.
+  
+      - To make sure that you do not send files to the server that are not needed:
+  
+        - Create a new directory `app`
+  
+        - Copy and Paste the following files into the `app` directory:
+        
+          - `requirements.txt`
+  
+          - `blog.db`
+  
+          - `blog` directory
+        
+        - Move the `main.py` file out of the `app/blog` directory into the `app` directory.
+  
+        - Then everywhere that you are importing from `.` need to change to `..app.blog`
+  
+        - Then `cd` into the `app` directory before running the `deta new` command.
+  
+        - Check that everything is functioning properly first by running `uvicorn main:app --reload`. I am having some issuse with this part too. I am getting an error: 
+  
+          ```
+           File ".\main.py", line 9, in <module>
+                from FastAPI_A_Python_Framework_Full_Course_YouTube.app.blog import models
+            ModuleNotFoundError: No module named 'FastAPI_A_Python_Framework_Full_Course_YouTube'
+          ```
+  
+        - Once everything is functioning correctly, you can now run `deta new` and it will add everything into the server from the directory you are currently in.
+          
+      - `deta deploy` is if you change something in the files and just need to update the micro you already created.
+
+  - Then you can go back to your account online and click on micros, and you will see your app there. Click on the app and then you will see the link to your deployed application in the top right corner.
