@@ -6,13 +6,13 @@ This file contains all of the routes/paths for the API.
 from fastapi import FastAPI
 
 # Import the classes from the models files
-from . import models
+from blog import models
 
 # Import the engine from the database file
-from .database import engine
+from blog.database import engine
 
 # Import the blog routes and the user routes from the routers directory
-from .routers import blog, user, login
+from blog.routers import blog, user, login
 
 # Instantiate FastAPI
 app = FastAPI()
