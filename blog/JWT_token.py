@@ -35,13 +35,19 @@ def verify_token(token, credentials_exception):
 	:return: bool: True if the token has been verified, False if not
 	"""
 	try:
+		# Parses the long string into a token for that user
+		# https://www.programcreek.com/python/example/62091/jwt.decode
 		payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-		username: str = payload.get("sub")
+		# Get the email inputted
+		email: str = payload.get("sub")
 
-		if username is None:
+		# If there is no email entered...
+		if email is None:
+			# Raise the credentials exception error message
 			raise credentials_exception
 
+		# Set the token data schema for the email
 		token_data = schemas.TokenData(email=email)
 
-	except JWTError:
+	except JWTError:  # Otherwise, raise the credentials exception error message
 		raise credentials_exception
