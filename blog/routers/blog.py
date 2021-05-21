@@ -41,8 +41,13 @@ If you do not know the correct status code, you can use the status method
 	from fastapi that has a list of all the status codes and their meanings,
 	like below.
 """
+
+
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def create(request: schemas.Blog, db: Session = Depends(get_db)):
+def create(
+		request: schemas.Blog, db: Session = Depends(get_db),
+		current_user: schemas.User = Depends(oauth2.get_current_user)
+):
 	"""
 	Create a function to create a new blog post, taking in the title and body
 		of the blog using pydantic.
@@ -56,13 +61,19 @@ def create(request: schemas.Blog, db: Session = Depends(get_db)):
 # Create a new path request method to remove a blog
 @router.delete('/{blog_id}', status_code=status.HTTP_204_NO_CONTENT)
 # Create the method to remove it from the database
-def destroy(blog_id, db: Session = Depends(get_db)):
+def destroy(
+		blog_id, db: Session = Depends(get_db),
+		current_user: schemas.User = Depends(oauth2.get_current_user)
+):
 	return blog.destroy(blog_id, db)
 
 
 # Create a new path to update a blog based on its id
 @router.put('/{blog_id}', status_code=status.HTTP_202_ACCEPTED)
-def update(blog_id, request: schemas.Blog, db: Session = Depends(get_db)):
+def update(
+		blog_id, request: schemas.Blog, db: Session = Depends(get_db),
+		current_user: schemas.User = Depends(oauth2.get_current_user)
+):
 	"""
 	Create the method to update the blog
 	The request: schemas.Blog is just getting the schema of the blog table to
@@ -74,7 +85,10 @@ def update(blog_id, request: schemas.Blog, db: Session = Depends(get_db)):
 # Add a new route/path request to get a single blog by its id
 @router.get('/{blog_id}', status_code=200, response_model=schemas.ShowBlog)
 # Define the method to get the 1st blog by the id
-def show_blog(blog_id, db: Session = Depends(get_db)):
+def show_blog(
+		blog_id, db: Session = Depends(get_db),
+		current_user: schemas.User = Depends(oauth2.get_current_user)
+):
 	return blog.show_blog(blog_id, db)
 
 
